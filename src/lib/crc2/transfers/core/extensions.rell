@@ -1,0 +1,5 @@
+@extendable
+function before_transfer(from: ft4.accounts.account, to: ft4.accounts.account, token, amount: big_integer);
+
+@extendable
+function after_transfer(from: ft4.accounts.account, to: ft4.accounts.account, token, amount: big_integer);

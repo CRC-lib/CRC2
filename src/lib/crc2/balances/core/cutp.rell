@@ -1,0 +1,63 @@
+@extend(cutp_ext.get_cutp_features)
+function (): list<text> {
+    return list<text>([cutp.CUTP_LIST_OWNERS, cutp.CUTP_LIST_ADDRESS_TOKENS, cutp.CUTP_NFT_OWNER_DATA]);
+}
+
+@extend(cutp.cutp_impl_balance)
+function (proto: text, address: text, token_id: text): decimal? {
+    if (proto != cutp_ext.CRC) return null;
+
+    val account = ft4.accounts.Account(cutp_ext.parse_account(address));
+    val asset = get_token(cutp_ext.parse_token_id(token_id));
+    return _get_account_balance(account, asset);
+}
+
+@extend(cutp.cutp_impl_list_owners)
+function (proto: text, token_id: text, cursor: text?): ft4.utils.paged_result? {
+    if (proto != cutp_ext.CRC) return null;
+
+    val token = get_token(cutp_ext.parse_token_id(token_id));
+    return ft4.utils.make_page(_get_token_balances(token, null, cursor), null);
+}
+
+@extend(cutp.cutp_impl_list_address_tokens)
+function (
+    proto: text,
+    address: text,
+    criteria: map<text, text>,
+    cursor: text?
+): ft4.utils.paged_result? {
+    if (proto != cutp_ext.CRC) return null;
+
+    val account = ft4.accounts.Account(cutp_ext.parse_account(address));
+    return ft4.utils.make_page(_get_account_balances(account.id, null, cursor), null);
+}
+
+// @extend(nft_v1.cutp_impl_nft_owner_data)
+// function (proto: text, token_id: text): nft_v1.token_owner_data? {
+//     if (proto != cutp.CRC) return null;
+
+//     val token = tokens.get_token(cutp.parse_token_id(token_id));
+//     return get_token_owner_data(token);
+// }
+
+
+// function get token_residency(tokens.token): nft_v1.token_residency {
+//     if (token.protocol_id == tokens.CRC2_PROTOCOL_ID) {
+
+//     }
+// }
+
+// enum token_residency {
+//     local, // token owner data is stored locally
+//     bridged_out, // token was minted locally but is currently bridged to another chain or system
+//     bridged_in, // token was minted on another chain or system but is currently bridged into this chain and local ownership record is authoritative
+//     tracked, // token ownership authority is on another chain or system but this chain has a copy (possibly out-of-date)
+//     untracked, // token ownership authority is on another chain or system
+// }
+
+// struct token_owner_data {
+//     residency: token_residency;
+//     owner: text?;
+//     last_updated: timestamp?; // only relevant for tracked tokens
+// }

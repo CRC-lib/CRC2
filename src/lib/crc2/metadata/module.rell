@@ -1,2 +1,5 @@
-import ^.core.metadata.*;
-import ^.external.metadata;
+module;
+
+import .core;
+
+import ^.tokens.core.*;

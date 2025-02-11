@@ -1,2 +1,3 @@
-import ^.core.evm.*;
-import ^.external.evm;
+module;
+
+import .core;

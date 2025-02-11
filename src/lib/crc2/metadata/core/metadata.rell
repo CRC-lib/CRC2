@@ -1,0 +1,10 @@
+
+function get_metadata(token) {
+  return add_metadata(token, map<text, gtv>());
+}
+
+// @extend(basic_v1.cutp_impl_lookup_token)
+// function (proto: text, criteria: map<text, text>): ft4.utils.paged_result? {
+  
+// }
+

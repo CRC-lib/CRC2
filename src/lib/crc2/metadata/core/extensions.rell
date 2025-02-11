@@ -1,0 +1,5 @@
+@extendable
+function add_metadata(token, metadata: map<text, gtv>): map<text, gtv>;
+
+@extendable
+function get_token_name_symbol(token): (name: text?, symbol: text?)?;

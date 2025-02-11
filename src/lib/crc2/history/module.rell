@@ -1,4 +1,3 @@
 module;
 
-import ^.core.history.*;
-import ^.external.history;
+import .core;

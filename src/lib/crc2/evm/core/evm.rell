@@ -1,0 +1,34 @@
+val EVM_PROTOCOL_ID = 1;
+
+entity evm_token {
+    network_id: integer;
+    contract_address: byte_array;
+    token_id: big_integer;
+    key network_id, contract_address, token_id;
+    key token;
+}
+
+entity evm_network_account {
+    key network_id: integer;
+    key ft4.accounts.account;
+}
+
+function ensure_network_account(network_id: integer) {
+    val account = evm_network_account @? { .network_id == network_id } (.account);
+    if (exists(account)) return account;
+
+    val new_account = ft4.accounts.create_account_without_auth(("EVM_NETWORK_ACCOUNT" + network_id).hash(), "EVM_NETWORK_ACCOUNT");
+    create evm_network_account (network_id, new_account);
+    return new_account;
+}
+
+function ensure_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer) {
+    val evm_token = evm_token @? { network_id, contract_address, token_id };
+    if (exists(evm_token)) return evm_token;
+    val token = create_token((network_id + contract_address.to_hex() + token_id).hash(), EVM_PROTOCOL_ID);
+    return create evm_token(network_id, contract_address, token_id, token);
+}
+
+function create_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer, token) {
+    return create evm_token(network_id, contract_address, token_id, token);
+}

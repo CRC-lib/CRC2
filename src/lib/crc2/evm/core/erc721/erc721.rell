@@ -1,0 +1,27 @@
+struct erc721_metadata {
+    name: text;
+    description: text;
+    image: text;
+    external_url: text?;
+    background_color: text?;
+    animation_url: text?;
+    youtube_url: text?;
+    attributes: map<text, gtv>;
+}
+
+function get_erc721_metadata(token): erc721_metadata {
+    return extract_erc721_metadata(add_erc721_metadata(token, list()));
+}
+
+function extract_erc721_metadata(metadata: map<text, gtv>): erc721_metadata {
+    return erc721_metadata(
+        name = text.from_gtv(metadata.get("name")),
+        description = text.from_gtv(metadata.get("description")),
+        image = text.from_gtv(metadata.get("image")),
+        external_url = text.from_gtv(metadata.get("external_url")),
+        background_color = text.from_gtv(metadata.get("background_color")),
+        animation_url = text.from_gtv(metadata.get("animation_url")),
+        youtube_url = text.from_gtv(metadata.get("youtube_url")),
+        attributes = map<text, gtv>.from_gtv(metadata.get("attributes")),
+    );
+}

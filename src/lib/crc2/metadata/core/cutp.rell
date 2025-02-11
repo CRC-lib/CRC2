@@ -1,0 +1,24 @@
+@extend(cutp_ext.get_cutp_features)
+function (): list<text> {
+    return list<text>([cutp.CUTP_TOKEN_DATA]);
+}
+
+@extend(cutp.cutp_impl_token_data)
+function (
+    proto: text,
+    token_id: text,
+    requested_data: set<text>
+): map<text, gtv>? {
+    if (proto != cutp_ext.CRC) return null;
+    val token = get_token(cutp_ext.parse_token_id(token_id));
+    val metadata = get_metadata(token);
+    if (empty(requested_data)) return metadata;
+
+    val filtered_data = map<text, gtv>();
+    for (data in metadata.keys()) {
+        if (requested_data.contains(data)) {
+            filtered_data[data] = metadata.get(data);
+        }
+    }
+    return filtered_data;
+}

@@ -1,0 +1,58 @@
+namespace crc2 {
+    import lib.crc2.tokens;
+    import lib.crc2.balances;
+    import lib.crc2.transfers;
+    import lib.crc2.history;
+    import lib.crc2.metadata;
+}
+
+namespace ft4 {
+    import lib.ft4.accounts;
+    import lib.ft4.auth;
+}
+
+entity planet {
+    key name: text;
+    image_url: text;
+}
+
+entity plot {
+    key crc2.tokens.core.token;
+    name: text;
+    planet;
+    coordinates: text;
+    mutable digs: integer = 0;
+}
+
+entity sword {
+    key crc.tokens.token;
+    name: text;
+    image_url: text;
+    type: text;
+    damage: integer;
+    speed: integer;
+}
+
+function create_plot(planet_name: text, name: text, coordinates: text) {
+    val token = crc.balances.create_nft((planet_name + coordinates).hash());
+    create plot (token, name, planet @{ .name == planet_name }, coordinates);
+}
+
+function create_sword(name: text, image_url: text, type: text, damage: integer, speed: integer) {
+    val token = crc.balances.create_fungible((name + type).hash());
+    create sword (token, name, image_url, type, damage, speed);
+}
+
+@extend(crc.metadata.add_metadata)
+function (crc.tokens.token, metadata: map<text, gtv>) {
+    val ticket = ticket @? { token } ($.to_struct());
+    if (empty(ticket)) return metadata;
+
+    metadata.put("section", ticket.section.to_gtv());
+    metadata.put("seat", ticket.seat.to_gtv());
+    metadata.put("is_sold", ticket.is_sold.to_gtv());
+    metadata.put("is_used", ticket.is_used.to_gtv());
+    metadata.put("seat", ticket.seat.to_gtv());
+
+    return metadata;
+}

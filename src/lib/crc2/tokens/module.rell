@@ -1,2 +1,3 @@
-import ^.core.tokens.*;
-import ^.external.tokens;
+module;
+
+import .core;

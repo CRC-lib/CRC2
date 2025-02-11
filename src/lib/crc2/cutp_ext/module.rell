@@ -1,0 +1,35 @@
+module;
+
+import ^.tokens.core.*;
+
+import  cutp: lib.cutp.impl_hooks.basic_v1.*;
+
+val CRC = "crc";
+
+@extend(cutp.cutp_impl_supported_features)
+function (proto: text): set<text>? {
+    return set<text>(get_cutp_features());
+}
+
+@extend(cutp.cutp_impl_basic_token_data)
+function (proto: text, token_id: text): cutp.basic_token_data? {
+    if (proto != CRC) {
+        return null;
+    }
+
+    val token = get_token(parse_token_id(token_id));
+    val name = get_token_name(token);
+    val symbol = get_token_symbol(token);
+
+    val is_nft = token_is_nft(token);
+    val total_supply = get_token_supply(token);
+
+    return cutp.basic_token_data(
+        internal_id = token.id.to_gtv(),
+        name = name,
+        symbol = symbol,
+        is_nft = is_nft ?: false,
+        decimals = null,
+        total_supply = total_supply
+    );
+}

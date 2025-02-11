@@ -1,9 +1,0 @@
-import ^.tokens;
-import ^.cutp;
-
-import lib.cutp.impl_hooks.basic_v1;
-
-namespace ft4 {
-    import lib.ft4.accounts;
-    import lib.ft4.utils;
-}

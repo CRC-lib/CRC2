@@ -1,0 +1,2 @@
+@extendable
+function add_erc721_metadata(token, modules: list<name>): map<text, gtv>;
