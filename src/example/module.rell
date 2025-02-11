@@ -17,7 +17,7 @@ entity planet {
 }
 
 entity plot {
-    key crc2.tokens.core.token;
+    key crc2.tokens.token;
     name: text;
     planet;
     coordinates: text;
@@ -25,7 +25,7 @@ entity plot {
 }
 
 entity sword {
-    key crc.tokens.token;
+    key crc2.tokens.token;
     name: text;
     image_url: text;
     type: text;
@@ -34,25 +34,28 @@ entity sword {
 }
 
 function create_plot(planet_name: text, name: text, coordinates: text) {
-    val token = crc.balances.create_nft((planet_name + coordinates).hash());
+    val token = crc2.balances.create_nft((planet_name + coordinates).hash());
     create plot (token, name, planet @{ .name == planet_name }, coordinates);
 }
 
 function create_sword(name: text, image_url: text, type: text, damage: integer, speed: integer) {
-    val token = crc.balances.create_fungible((name + type).hash());
+    val token = crc2.balances.create_fungible((name + type).hash());
     create sword (token, name, image_url, type, damage, speed);
 }
 
-@extend(crc.metadata.add_metadata)
-function (crc.tokens.token, metadata: map<text, gtv>) {
-    val ticket = ticket @? { token } ($.to_struct());
-    if (empty(ticket)) return metadata;
+function equip_sword(ft4.accounts.account, crc2.tokens.token) {
+    crc2.balances.mint(token, account, 1L);
+}
 
-    metadata.put("section", ticket.section.to_gtv());
-    metadata.put("seat", ticket.seat.to_gtv());
-    metadata.put("is_sold", ticket.is_sold.to_gtv());
-    metadata.put("is_used", ticket.is_used.to_gtv());
-    metadata.put("seat", ticket.seat.to_gtv());
+@extend(crc2.metadata.add_metadata)
+function (crc2.tokens.token, metadata: map<text, gtv>) {
+    val plot = plot @? { token } ($.to_struct());
+    if (empty(plot)) return metadata;
+
+    metadata.put("name", plot.name.to_gtv());
+    metadata.put("planet", plot.planet.name.to_gtv());
+    metadata.put("coordinates", plot.coordinates.to_gtv());
+    metadata.put("digs", plot.digs.to_gtv());
 
     return metadata;
 }

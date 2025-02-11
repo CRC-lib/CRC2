@@ -14,5 +14,5 @@ operation transfer(
     val token = get_token(token_id, origin_brid);
     val to_account = ft4.accounts.Account(to_account_id);
 
-    core._transfer(from, to_account, token, amount);
+    _transfer(from, to_account, token, amount);
 }

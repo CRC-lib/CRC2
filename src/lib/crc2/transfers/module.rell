@@ -1,6 +1,6 @@
 module;
 
-import .core;
+import .core.*;
 import ^.tokens.core.*;
 
 namespace ft4 {

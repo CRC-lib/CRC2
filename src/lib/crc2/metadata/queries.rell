@@ -1,4 +1,4 @@
 query get_metadata(token_id: byte_array) {
     val token = get_token(token_id);
-    return core.get_metadata(token);
+    return _get_metadata(token);
 }
