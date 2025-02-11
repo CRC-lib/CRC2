@@ -1,0 +1,14 @@
+
+function _transfer(from: ft4.accounts.account, to: ft4.accounts.account, tokens.token, amount: big_integer) {
+    require(amount > 0L, "Amount must be positive");
+    require(from != to, "Transfer to self not allowed");
+    val balance = require(balances.balance @? { token, from } (.amount), "Sender balance does not exist");
+    require(balance >= amount, "Insufficient sender balance");
+
+    before_transfer(from, to, token, amount);
+
+    balances._deduct_balance(token, from, amount);
+    balances._increase_balance(token, to, amount);
+
+    after_transfer(from, to, token, amount);
+}

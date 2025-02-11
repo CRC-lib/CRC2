@@ -1,0 +1,15 @@
+function parse_account(address: text): byte_array {
+    val account_prefix = CRC + ":acc:";
+    require(address.starts_with(account_prefix), "Invalid address");
+    return byte_array.from_hex(address.sub(account_prefix.size()));
+}
+
+function parse_token_id(token_id: text): byte_array {
+    val token_prefix = CRC + ":assid:";
+    require(token_id.starts_with(token_prefix), "Invalid token id");
+    return byte_array.from_hex(token_id.sub(token_prefix.size()));
+}
+
+function parse_amount(amount: decimal): big_integer {
+    return amount.to_big_integer();
+}

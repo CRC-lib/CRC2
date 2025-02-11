@@ -1,0 +1,4 @@
+@mount('crc2')
+module;
+
+query get_version(): text = "0.1.0";

@@ -1,0 +1,7 @@
+module;
+
+import ^.tokens;
+
+namespace ft4 {
+    import lib.ft4.accounts;
+}

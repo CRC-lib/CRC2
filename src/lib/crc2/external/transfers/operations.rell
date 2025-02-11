@@ -1,0 +1,18 @@
+@extend(ft4.auth.auth_handler)
+function () = ft4.auth.add_auth_handler(
+        scope = "transfer",
+        flags = ["T"]
+    );
+
+operation transfer(
+    to_account_id: byte_array,
+    token_id: byte_array,
+    origin_brid: byte_array = chain_context.blockchain_rid,
+    amount: integer = 1
+) {
+    val from = ft4.auth.authenticate();
+    val token = tokens.get_token(token_id, origin_brid);
+    val to_account = ft4.accounts.Account(to_account_id);
+
+    transfers._transfer(from, to_account, token, amount);
+}

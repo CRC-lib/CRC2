@@ -1,0 +1,84 @@
+module;
+
+import lib.ft4.utils; // for pagination
+
+// CUTP backend does not have to implement all features
+// We identify features by strings as they are more future-proof than enums
+
+val CUTP_TRANSFER = "transfer";
+val CUTP_LIST_OWNERS = "list_owners"; // list all owners of a token
+val CUTP_LIST_ADDRESS_TOKENS = "list_address_tokens"; // list all tokens owned by an address, aka get_balances
+val CUTP_LOOKUP_TOKEN = "lookup_token"; // lookup a token by criteria
+val CUTP_TOKEN_DATA = "token_data"; // get token data beyond basic
+
+
+// Note: balance and basic_token_data are non-optional features. 
+
+@extendable
+function cutp_impl_supported_features(proto: text): set<text>? {
+    return null;
+}
+
+@extendable
+function cutp_impl_supported_protocols(): map<text, set<text>> {
+    return map<text, set<text>>();
+}
+
+
+
+@extendable
+function cutp_impl_transfer(proto: text, token_id: text, from: text, to: text, amount: decimal, data: gtv): boolean {
+    return false;
+}
+
+@extendable
+function  cutp_impl_balance(proto: text, address: text, token_id: text): decimal? {
+    return null;
+}
+
+// list owners of a token, if possible
+// paged results are a list of pairs (address, balance)
+
+@extendable
+function cutp_impl_list_owners(proto: text, token_id: text, cursor: text?): utils.paged_result? {
+    return null;
+}
+
+
+// list tokens owned by an address
+// paged results are a list of pairs (token_id, balance)
+
+@extendable
+function cutp_impl_list_address_tokens (proto: text, address: text, criteria: map<text, text>, cursor: text?): utils.paged_result? {
+    return null;
+}
+
+// find a list of token_ids that match the criteria
+// example criteria: [name: "token_name"]
+/// for empty criteria, return all tokens
+@extendable function cutp_impl_lookup_token(proto: text, criteria: map<text, text>): utils.paged_result? {
+    return null;
+}
+
+
+// NFT is specifically a token which has a unique owner
+// We don't consider "fungible tokens with data attached" as NFTs in the context of CUTP
+// e.g ERC1155 tokens are not NFTs unless they have max supply of 1
+
+struct basic_token_data {
+    internal_id: gtv; // internal id of the token
+    name: text?;
+    symbol: text?;
+    is_nft: boolean; // true if the token is known to be an NFT; false otherwise
+    decimals: integer?;
+    total_supply: decimal?;
+}
+
+@extendable function cutp_impl_basic_token_data(proto: text, token_id: text): basic_token_data? {
+    return null;
+}
+
+
+@extendable function cutp_impl_token_data(proto: text, token_id: text, requested_data: set<text>): map<text, gtv>? {
+    return null;
+}

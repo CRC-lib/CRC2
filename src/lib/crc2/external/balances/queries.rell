@@ -1,0 +1,25 @@
+query get_account_balance(account_id: byte_array, token_id: byte_array) {
+    val account = ft4.accounts.Account(account_id);
+    val token = tokens.get_token(token_id);
+    return balances.get_account_balance(account, token);
+}
+
+query get_account_balances(account_id: byte_array, page_size: integer?, page_cursor: text?) {
+    return ft4.utils.make_page(
+            balances.get_account_balances(account_id, page_size, page_cursor),
+            page_size
+        );
+}
+
+query get_token_balances(token_id: byte_array, page_size: integer?, page_cursor: text?) {
+    val token = tokens.get_token(token_id);
+    return ft4.utils.make_page(
+            balances.get_token_balances(token, page_size, page_cursor),
+            page_size
+        );
+}
+
+query get_nft_owner(token_id: byte_array) {
+    val token = tokens.get_token(token_id);
+    return balances.get_nft_owner(token);
+}

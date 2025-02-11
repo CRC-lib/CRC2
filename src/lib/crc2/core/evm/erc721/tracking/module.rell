@@ -1,0 +1,59 @@
+module;
+
+import ^^^.tokens;
+import ^^^.evm;
+import ^^.erc721;
+
+namespace eif {
+    import lib.eif.messaging;
+    import lib.eif_event_connector;
+}
+
+entity owner {
+    key evm.evm_token;
+    index mutable evm_address: byte_array;
+}
+
+@extend(eif.messaging.handle_evm_block)
+function (evm_block: eif.messaging.evm_block_message) {
+    for (event in evm_block.events) {
+        when (event.name) {
+            "Transfer" -> process_transfer_event(evm_block.network_id, create_transfer_event(event));
+        }
+    }
+}
+
+struct transfer_event {
+    from: byte_array;
+    to: byte_array;
+    contract_address: byte_array;
+    token_id: big_integer;
+}
+
+function create_transfer_event(event: eif.messaging.event_data) = transfer_event(
+    from = byte_array.from_gtv(event.non_indexed_values[0]),
+    to = byte_array.from_gtv(event.non_indexed_values[1]),
+    contract_address = event.contract_address,
+    token_id = big_integer.from_gtv(event.non_indexed_values[2])
+);
+
+function process_transfer_event(network_id: integer, event: transfer_event) {
+    val evm_token = evm.evm_token @? { network_id, event.contract_address, event.token_id };
+    if (empty(evm_token)) {
+        handle_untracked_token(network_id, event);
+    } else {
+        set_owner(evm_token, event.to);
+    }
+}
+
+function set_owner(evm_token: evm.evm_token, new_owner_address: byte_array) {
+    val owner = owner @? { evm_token };
+    if (exists(owner)) {
+        owner.evm_address = new_owner_address;
+    } else {
+        create owner ( evm_token, new_owner_address );
+    }
+}
+
+@extendable
+function handle_untracked_token(network_id: integer, event: transfer_event) {}

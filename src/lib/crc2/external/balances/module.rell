@@ -1,0 +1,10 @@
+@mount('crc2')
+module;
+
+import ^^.core.balances;
+import ^^.core.tokens;
+
+namespace ft4 {
+    import lib.ft4.accounts;
+    import lib.ft4.utils;
+}

@@ -1,0 +1,25 @@
+module;
+
+// CUTP features specific to NFTs
+
+val CUTP_NFT_OWNER_DATA = "nft_owner_data"; // get token owner data
+
+
+enum token_residency {
+    local, // token owner data is stored locally
+    bridged_out, // token was minted locally but is currently bridged to another chain or system
+    bridged_in, // token was minted on another chain or system but is currently bridged into this chain and local ownership record is authoritative
+    tracked, // token ownership authority is on another chain or system but this chain has a copy (possibly out-of-date)
+    untracked, // token ownership authority is on another chain or system
+}
+
+struct token_owner_data {
+    residency: token_residency;
+    owner: text?;
+    last_updated: timestamp?; // only relevant for tracked tokens
+}
+
+@extendable function cutp_impl_nft_owner_data(proto: text, token_id: text): token_owner_data? {
+    return null;
+}
+

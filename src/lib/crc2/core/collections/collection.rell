@@ -1,0 +1,30 @@
+// entity collection {
+//     key id: byte_array, origin_brid: byte_array;
+//     mutable name: text;
+// }
+
+// entity collection_token {
+//     index collection;
+//     key tokens.token;
+// }
+
+// function create_collection(name: text) {
+//     val rid = chain_context.blockchain_rid;
+//     create collection (id = (rid + name).hash(), origin_brid = rid, name);
+// }
+
+// function add_token_to_collection(collection: collection, token: tokens.token) {
+//     create collection_token (collection, token);
+// }
+
+// @extend(metadata.add_metadata)
+// function (tokens.token, metadata: map<text, gtv>) {
+
+//     val collection = collection_token @? { token } (.collection);
+//     if (empty(collection)) return metadata;
+
+//     metadata.put("collection_id", collection.id.to_gtv());
+//     metadata.put("collection_name", collection.name.to_gtv());
+
+//     return metadata;
+// }

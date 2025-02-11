@@ -1,0 +1,14 @@
+val CRC2_PROTOCOL_ID = 0;
+
+entity token {
+    key origin_brid: byte_array, id: byte_array;
+    mutable protocol_id: integer;
+}
+
+function create_token(id: byte_array, protocol_id: integer = CRC2_PROTOCOL_ID) {
+    return create token ( origin_brid = chain_context.blockchain_rid, id, protocol_id );
+}
+
+function get_token(id: byte_array, origin_brid: byte_array = chain_context.blockchain_rid) {
+    return require(token @? { origin_brid, id }, "Token with id %s not found".format(id));
+}

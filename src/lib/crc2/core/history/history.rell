@@ -1,0 +1,51 @@
+enum transfer_type {
+    sent,
+    received
+}
+
+@log
+entity transfer_history_entry {
+    op_index: integer = op_context.op_index;
+    index transaction, op_index;
+    index ft4.accounts.account;
+    index tokens.token;
+    amount: big_integer;
+    transfer_type;
+}
+
+@extend(transfers.after_transfer)
+function (from: ft4.accounts.account, to: ft4.accounts.account, token: tokens.token, amount: big_integer) {
+    create transfer_history_entry (
+        account = from,
+        token = token,
+        amount = amount,
+        transfer_type.sent
+    );
+
+    create transfer_history_entry (
+        account = to,
+        token = token,
+        amount = amount,
+        transfer_type.received
+    );
+}
+
+@extend(balances.after_mint)
+function (account: ft4.accounts.account, token: tokens.token, amount: big_integer) {
+    create transfer_history_entry (
+        account = account,
+        token = token,
+        amount = amount,
+        transfer_type.received
+    );
+}
+
+@extend(balances.after_burn)
+function (account: ft4.accounts.account, token: tokens.token, amount: big_integer) {
+    create transfer_history_entry (
+        account = account,
+        token = token,
+        amount = amount,
+        transfer_type.sent
+    );
+}

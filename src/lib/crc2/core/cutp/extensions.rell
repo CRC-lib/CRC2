@@ -1,0 +1,24 @@
+@extendable
+function get_cutp_features(): list<text> {
+    return list<text>();
+}
+
+@extendable
+function get_token_name(token: tokens.token): text? {
+    return null;
+}
+
+@extendable
+function get_token_symbol(token: tokens.token): text? {
+    return null;
+}
+
+@extendable
+function token_is_nft(token: tokens.token): boolean? {
+    return null;
+}
+
+@extendable
+function get_token_supply(token: tokens.token): decimal? {
+    return null;
+}
