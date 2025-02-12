@@ -11,6 +11,62 @@ entity balance {
     mutable amount: big_integer;
 }
 
+function create_fungible(id: byte_array, max_supply: big_integer = MAX_TOKEN_AMOUNT) {
+    val token = create_token(id);
+    create token_supply ( token, max = max_supply );
+    return token;
+}
+
+function create_nft(id: byte_array) {
+    val token = create_token(id);
+    create token_supply ( token, max = 1L );
+    return token;
+}
+
+function create_and_mint_fungible(
+    id: byte_array,
+    max_supply: big_integer,
+    account: ft4.accounts.account,
+    amount: big_integer
+) {
+    val token = create_fungible(id, max_supply);
+    mint(token, account, amount);
+    return token;
+}
+
+function create_and_mint_nft(id: byte_array, account: ft4.accounts.account) {
+    val token = create_nft(id);
+    mint(token, account, 1L);
+    return token;
+}
+
+function mint(token, account: ft4.accounts.account, amount: big_integer) {
+
+    val token_supply = ensure_token_supply(token);
+
+    require(token_supply.total + amount <= token_supply.max, "Token supply overflow");
+    before_mint(account, token, amount);
+
+    _increase_balance(token, account, amount);
+    token_supply.total += amount;
+
+    after_mint(account, token, amount);
+}
+
+function burn(token: token, account: ft4.accounts.account, amount: big_integer) {
+
+    val token_supply = require(token_supply @? { token }, "Token supply does not exist");
+
+    require(token_supply.total >= amount, "Token supply underflow");
+
+    before_burn(account, token, amount);
+
+    _deduct_balance(token, account, amount);
+    token_supply.total -= amount;
+
+    after_burn(account, token, amount);
+}
+
 function _increase_balance(token, account: ft4.accounts.account, amount: big_integer) {
     require(amount > 0L, "Amount must be positive");
     val balance = balance @? { token, account };
@@ -31,56 +87,6 @@ function _deduct_balance(token, account: ft4.accounts.account, amount: big_integ
     if (balance.amount == 0L) {
         delete balance;
     }
-}
-
-function mint(token, account: ft4.accounts.account, amount: big_integer) {
-
-    val token_supply = ensure_token_supply(token);
-
-    require(token_supply.total + amount <= token_supply.max, "Token supply overflow");
-    before_mint(account, token, amount);
-
-    _increase_balance(token, account, amount);
-    token_supply.total += amount;
-
-    after_mint(account, token, amount);
-}
-
-function create_fungible(id: byte_array, max_supply: big_integer = MAX_TOKEN_AMOUNT) {
-    val token = create_token(id);
-    create token_supply ( token, max = max_supply );
-    return token;
-}
-
-function create_nft(id: byte_array) {
-    val token = create_token(id);
-    create token_supply ( token, max = 1L );
-    return token;
-}
-
-function create_and_mint(id: byte_array, max_supply: big_integer, account: ft4.accounts.account, amount: big_integer) {
-    val token = create_token(id);
-    create token_supply ( token, max = max_supply );
-    mint(token, account, amount);
-}
-
-function create_and_mint_nft(id: byte_array, account: ft4.accounts.account) {
-    val token = create_nft(id);
-    mint(token, account, 1L);
-}
-
-function burn(token: token, account: ft4.accounts.account, amount: big_integer) {
-
-    val token_supply = require(token_supply @? { token }, "Token supply does not exist");
-
-    require(token_supply.total >= amount, "Token supply underflow");
-
-    before_burn(account, token, amount);
-
-    _deduct_balance(token, account, amount);
-    token_supply.total -= amount;
-
-    after_burn(account, token, amount);
 }
 
 function _get_account_balance(ft4.accounts.account, token): big_integer {
@@ -131,12 +137,12 @@ function get_total_supply(token): big_integer {
     return token_supply @? { token } ( .total ) ?: 0L;
 }
 
-function is_nft(token): boolean {
-    return get_max_supply(token) == 1L;
-}
-
 function get_max_supply(token): big_integer {
     return require(token_supply @? { token } ( .max ), "Token supply does not exist");
+}
+
+function is_nft(token): boolean {
+    return get_max_supply(token) == 1L;
 }
 
 function _get_nft_owner(token): ft4.accounts.account? {

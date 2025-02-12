@@ -1,9 +1,10 @@
 namespace crc2 {
     import lib.crc2.tokens;
     import lib.crc2.balances;
+    import lib.crc2.collections;
+    import lib.crc2.metadata;
     import lib.crc2.transfers;
     import lib.crc2.history;
-    import lib.crc2.metadata;
 }
 
 namespace ft4 {
@@ -19,43 +20,96 @@ entity planet {
 entity plot {
     key crc2.tokens.token;
     name: text;
+    image_url: text;
     planet;
     coordinates: text;
     mutable digs: integer = 0;
+    key planet, coordinates;
 }
 
 entity sword {
     key crc2.tokens.token;
     name: text;
+    key symbol: text;
     image_url: text;
     type: text;
     damage: integer;
     speed: integer;
 }
 
-function create_plot(planet_name: text, name: text, coordinates: text) {
-    val token = crc2.balances.create_nft((planet_name + coordinates).hash());
-    create plot (token, name, planet @{ .name == planet_name }, coordinates);
+function create_planet(name: text, image_url: text) {
+    val planet = create planet ( name, image_url );
+
+    //We can optionally use the crc2 collections to group tokens 
+    crc2.collections.create_collection(planet.name);
 }
 
-function create_sword(name: text, image_url: text, type: text, damage: integer, speed: integer) {
-    val token = crc2.balances.create_fungible((name + type).hash());
-    create sword (token, name, image_url, type, damage, speed);
+function create_plot(planet: planet, name: text, coordinates: text, image_url: text) {
+    val token = crc2.balances.create_nft((planet.name + coordinates).hash());
+    create plot ( token, name, planet, coordinates, image_url );
+
+    val collection = crc2.collections.get_collection_by_name(planet.name);
+    crc2.collections.add_token_to_collection(collection, token);
 }
 
-function equip_sword(ft4.accounts.account, crc2.tokens.token) {
-    crc2.balances.mint(token, account, 1L);
+function create_and_mint_plot(planet: planet, name: text, coordinates: text, image_url: text, account: ft4.accounts.account) {
+    val token = crc2.balances.create_and_mint_nft((planet.name + coordinates).hash(), account);
+    create plot ( token, name, planet, coordinates, image_url );
+}
+
+function transfer_plot(from: ft4.accounts.account, to: ft4.accounts.account, plot: plot) {
+    crc2.transfers._transfer(from, to, plot.token, 1L);
+}
+
+function create_sword(name: text, symbol: text, image_url: text, type: text, damage: integer, speed: integer) {
+    val token = crc2.balances.create_fungible(symbol.to_bytes());
+    create sword ( token, name, symbol, image_url, type, damage, speed );
+}
+
+function equip_sword(ft4.accounts.account, sword) {
+    crc2.balances.mint(sword.token, account, 1L);
+}
+
+function destroy_sword(ft4.accounts.account, sword) {
+    crc2.balances.burn(sword.token, account, 1L);
+}
+
+function transfer_sword(from: ft4.accounts.account, to: ft4.accounts.account, sword, amount: big_integer) {
+    crc2.transfers._transfer(from, to, sword.token, amount);
 }
 
 @extend(crc2.metadata.add_metadata)
 function (crc2.tokens.token, metadata: map<text, gtv>) {
-    val plot = plot @? { token } ($.to_struct());
+    metadata.put_all(add_plot_metadata(token));
+    metadata.put_all(add_sword_metadata(token));
+    return metadata;
+}
+
+function add_plot_metadata(crc2.tokens.token) {
+    val metadata = map<text, gtv>();
+    val plot = plot @? { token } ( $.to_struct() );
     if (empty(plot)) return metadata;
 
     metadata.put("name", plot.name.to_gtv());
+    metadata.put("image_url", plot.image_url.to_gtv());
     metadata.put("planet", plot.planet.name.to_gtv());
     metadata.put("coordinates", plot.coordinates.to_gtv());
     metadata.put("digs", plot.digs.to_gtv());
+
+    return metadata;
+}
+
+function add_sword_metadata(crc2.tokens.token) {
+    val metadata = map<text, gtv>();
+    val sword = sword @? { token } ( $.to_struct() );
+    if (empty(sword)) return metadata;
+
+    metadata.put("name", sword.name.to_gtv());
+    metadata.put("symbol", sword.symbol.to_gtv());
+    metadata.put("image_url", sword.image_url.to_gtv());
+    metadata.put("type", sword.type.to_gtv());
+    metadata.put("damage", sword.damage.to_gtv());
+    metadata.put("speed", sword.speed.to_gtv());
 
     return metadata;
 }

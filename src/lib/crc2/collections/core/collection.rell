@@ -1,30 +1,31 @@
-// entity collection {
-//     key id: byte_array, origin_brid: byte_array;
-//     mutable name: text;
-// }
+entity collection {
+    key id: byte_array;
+    mutable name: text;
+}
 
-// entity collection_token {
-//     index collection;
-//     key tokens.token;
-// }
+entity collection_token {
+    index collection;
+    key token;
+}
 
-// function create_collection(name: text) {
-//     val rid = chain_context.blockchain_rid;
-//     create collection (id = (rid + name).hash(), origin_brid = rid, name);
-// }
+function create_collection(name: text) {
+    return create collection ( id = name.hash(), name );
+}
 
-// function add_token_to_collection(collection: collection, token: tokens.token) {
-//     create collection_token (collection, token);
-// }
+function get_collection(collection_id: byte_array) {
+    return require(collection @? { .id == collection_id }, "Collection with id %s not found".format(collection_id));
+}
 
-// @extend(metadata.add_metadata)
-// function (tokens.token, metadata: map<text, gtv>) {
+function get_collection_by_name(name: text) {
+    val collections = collection @* { .name == name };
+    require(collections.size() == 1, "Unique collection with name %s not found".format(name));
+    return collections[0];
+}
 
-//     val collection = collection_token @? { token } (.collection);
-//     if (empty(collection)) return metadata;
+function add_token_to_collection(collection: collection, token) {
+    return create collection_token ( collection, token );
+}
 
-//     metadata.put("collection_id", collection.id.to_gtv());
-//     metadata.put("collection_name", collection.name.to_gtv());
-
-//     return metadata;
-// }
+function get_tokens_by_collection_name(collection_name: text) {
+    return collection_token @* { .collection.name == collection_name } ( .token );
+}

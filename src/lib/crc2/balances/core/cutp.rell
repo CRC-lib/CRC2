@@ -33,31 +33,17 @@ function (
     return ft4.utils.make_page(_get_account_balances(account.id, null, cursor), null);
 }
 
-// @extend(nft_v1.cutp_impl_nft_owner_data)
-// function (proto: text, token_id: text): nft_v1.token_owner_data? {
-//     if (proto != cutp.CRC) return null;
+@extend(cutp.cutp_impl_nft_owner_data)
+function (proto: text, token_id: text): cutp.token_owner_data? {
+    if (proto != cutp_ext.CRC) return null;
+    val residency = get_token_residency(get_token(cutp_ext.parse_token_id(token_id)));
+    val token = get_token(cutp_ext.parse_token_id(token_id));
+    val owner = _get_nft_owner(token);
+    val owner_id = if (exists(owner)) owner.id.to_hex() else null;
+    return cutp.token_owner_data(residency, owner_id, last_updated = null);
+}
 
-//     val token = tokens.get_token(cutp.parse_token_id(token_id));
-//     return get_token_owner_data(token);
-// }
 
-
-// function get token_residency(tokens.token): nft_v1.token_residency {
-//     if (token.protocol_id == tokens.CRC2_PROTOCOL_ID) {
-
-//     }
-// }
-
-// enum token_residency {
-//     local, // token owner data is stored locally
-//     bridged_out, // token was minted locally but is currently bridged to another chain or system
-//     bridged_in, // token was minted on another chain or system but is currently bridged into this chain and local ownership record is authoritative
-//     tracked, // token ownership authority is on another chain or system but this chain has a copy (possibly out-of-date)
-//     untracked, // token ownership authority is on another chain or system
-// }
-
-// struct token_owner_data {
-//     residency: token_residency;
-//     owner: text?;
-//     last_updated: timestamp?; // only relevant for tracked tokens
-// }
+function get_token_residency(token): cutp.token_residency {
+   return cutp.token_residency.local;
+}

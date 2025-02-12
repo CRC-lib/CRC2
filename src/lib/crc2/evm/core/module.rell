@@ -1,7 +1,0 @@
-module;
-
-import ^^.tokens.core.*;
-
-namespace ft4 {
-    import lib.ft4.accounts;
-}
