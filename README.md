@@ -34,7 +34,7 @@ libs:
     registry: https://github.com/CRC-lib/CRC2
     path: src/lib/crc2
     tagOrBranch: 0.1.0
-    rid: x"FA487D75E63B6B58381F8D71E0700E69BEDEAD3A57D1E6C1A9ABB149FAC9E65F"
+    rid: x"B0911A26006830444BD3E566C9C1DDD9B8ADD31191730A89F2D752EB04F3C921"
     insecure: false
 ```
 
