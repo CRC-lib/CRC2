@@ -1,0 +1,49 @@
+@extend(cutp_ext.get_cutp_features)
+function (): list<text> {
+    return list<text>([cutp.CUTP_LIST_OWNERS, cutp.CUTP_LIST_ADDRESS_TOKENS, cutp.CUTP_NFT_OWNER_DATA]);
+}
+
+@extend(cutp.cutp_impl_balance)
+function (proto: text, address: text, token_id: text): decimal? {
+    if (proto != cutp_ext.CRC) return null;
+
+    val account = ft4.accounts.Account(cutp_ext.parse_account(address));
+    val asset = get_token(cutp_ext.parse_token_id(token_id));
+    return _get_account_balance(account, asset);
+}
+
+@extend(cutp.cutp_impl_list_owners)
+function (proto: text, token_id: text, cursor: text?): ft4.utils.paged_result? {
+    if (proto != cutp_ext.CRC) return null;
+
+    val token = get_token(cutp_ext.parse_token_id(token_id));
+    return ft4.utils.make_page(_get_token_balances(token, null, cursor), null);
+}
+
+@extend(cutp.cutp_impl_list_address_tokens)
+function (
+    proto: text,
+    address: text,
+    criteria: map<text, text>,
+    cursor: text?
+): ft4.utils.paged_result? {
+    if (proto != cutp_ext.CRC) return null;
+
+    val account = ft4.accounts.Account(cutp_ext.parse_account(address));
+    return ft4.utils.make_page(_get_account_balances(account.id, null, cursor), null);
+}
+
+@extend(cutp.cutp_impl_nft_owner_data)
+function (proto: text, token_id: text): cutp.token_owner_data? {
+    if (proto != cutp_ext.CRC) return null;
+    val residency = get_token_residency(get_token(cutp_ext.parse_token_id(token_id)));
+    val token = get_token(cutp_ext.parse_token_id(token_id));
+    val owner = _get_nft_owner(token);
+    val owner_id = if (exists(owner)) owner.id.to_hex() else null;
+    return cutp.token_owner_data(residency, owner_id, last_updated = null);
+}
+
+
+function get_token_residency(token): cutp.token_residency {
+   return cutp.token_residency.local;
+}

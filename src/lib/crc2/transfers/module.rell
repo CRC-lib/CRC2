@@ -1,2 +1,9 @@
-import ^.core.transfers.*;
-import ^.external.transfers;
+module;
+
+import .core.*;
+import ^.tokens.core.*;
+
+namespace ft4 {
+    import lib.ft4.auth;
+    import lib.ft4.accounts;
+}

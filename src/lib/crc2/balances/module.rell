@@ -1,2 +1,9 @@
-import ^.core.balances.*;
-import ^.external.balances;
+module;
+
+import .core.*;
+import ^.tokens.core.*;
+
+namespace ft4 {
+    import lib.ft4.accounts;
+    import lib.ft4.utils;
+}

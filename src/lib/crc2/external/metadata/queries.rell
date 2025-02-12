@@ -1,4 +1,0 @@
-query get_metadata(token_id: byte_array) {
-    val token = tokens.get_token(token_id);
-    return metadata.get_metadata(token);
-}

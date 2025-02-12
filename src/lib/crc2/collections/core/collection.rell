@@ -1,0 +1,31 @@
+entity collection {
+    key id: byte_array;
+    mutable name: text;
+}
+
+entity collection_token {
+    index collection;
+    key token;
+}
+
+function create_collection(name: text) {
+    return create collection ( id = name.hash(), name );
+}
+
+function get_collection(collection_id: byte_array) {
+    return require(collection @? { .id == collection_id }, "Collection with id %s not found".format(collection_id));
+}
+
+function get_collection_by_name(name: text) {
+    val collections = collection @* { .name == name };
+    require(collections.size() == 1, "Unique collection with name %s not found".format(name));
+    return collections[0];
+}
+
+function add_token_to_collection(collection: collection, token) {
+    return create collection_token ( collection, token );
+}
+
+function get_tokens_by_collection_name(collection_name: text) {
+    return collection_token @* { .collection.name == collection_name } ( .token );
+}

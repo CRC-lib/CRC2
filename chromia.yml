@@ -1,7 +1,25 @@
+blockchains:
+  example:
+    module: example
+    moduleArgs:
+      lib.ft4.core.admin:
+        admin_pubkey: 03ECD350EEBC617CBBFBEF0A1B7AE553A748021FD65C7C50C5ABB4CA16D4EA5B05
+    test:
+      modules:
+        - test.example_test
+      moduleArgs:
+        lib.ft4.core.admin:
+          admin_pubkey: 03ECD350EEBC617CBBFBEF0A1B7AE553A748021FD65C7C50C5ABB4CA16D4EA5B05
+        test.utils:
+          admin_priv_key: BBBDFE956021912512E14BB081B27A35A0EABC4098CB687E973C434006BCE114
+          admin_pub_key: 03ECD350EEBC617CBBFBEF0A1B7AE553A748021FD65C7C50C5ABB4CA16D4EA5B05
 compile:
   rellVersion: 0.14.2
 database:
   schema: schema_crc2
+test:
+  modules:
+    - test
 libs:
   ft4:
     registry: https://gitlab.com/chromaway/ft4-lib.git
@@ -15,27 +33,9 @@ libs:
     tagOrBranch: 1.32.2
     rid: x"1D567580C717B91D2F188A4D786DB1D41501086B155A68303661D25364314A4D"
     insecure: false
-  icmf:
-    registry: https://gitlab.com/chromaway/core/directory-chain
-    path: src/messaging/icmf
-    tagOrBranch: 1.35.0
-    rid: x"19D6BC28D527E6D2239843608486A84F44EDCD244E253616F13D1C65893F35F6"
-    insecure: false
-  eif:
-    registry: https://gitlab.com/chromaway/postchain-eif
-    path: postchain-eif-rell/rell/src/eif
-    tagOrBranch: 0.9.0
-    rid: x"D9FAA2AA88DEE0D1EAAFDFE8E28C1BAD89284CE4B6E75C1DBA9272DD8C3D944E"
-    insecure: false
-  eif_event_connector:
-    registry: https://gitlab.com/chromaway/postchain-eif
-    path: postchain-eif-rell/rell/src/eif_event_connector
-    tagOrBranch: 0.9.0
-    rid: x"4A669C5F98AEE970FECD5B77116E737196C7D3C7C6217DFD7EAC2F9317FC9461"
-    insecure: false
   cutp:
     registry: https://bitbucket.org/chromawallet/cutp_1
     path: rell/src/lib/cutp
     tagOrBranch: master
-    rid: x"1D567580C717B91D2F188A4D786DB1D41501086B155A68303661D25364314A4E"
+    rid: x"0A384FA10DB1AEAE83065E1E960B2167AEBE45E525E42690A1B8166984ADBE3C"
     insecure: false

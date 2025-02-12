@@ -1,0 +1,15 @@
+@extend(cutp_ext.get_cutp_features) function (): list<text> {
+    return list<text>([cutp.CUTP_TRANSFER]);
+}
+
+@extend(cutp.cutp_impl_transfer) function (proto: text, token_id: text, from: text, to: text, amount: decimal, data: gtv): boolean {
+    if (proto != cutp_ext.CRC) return false;
+
+    val from_account = ft4.accounts.Account(cutp_ext.parse_account(from));
+    val to_account = ft4.accounts.Account(cutp_ext.parse_account(to));
+    val asset = get_token(cutp_ext.parse_token_id(token_id));
+    val amount_big = cutp_ext.parse_amount(amount);
+
+    _transfer(from_account, to_account, asset, amount_big);
+    return true;
+}

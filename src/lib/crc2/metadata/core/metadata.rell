@@ -1,0 +1,4 @@
+
+function _get_metadata(token) {
+  return add_metadata(token, map<text, gtv>());
+}

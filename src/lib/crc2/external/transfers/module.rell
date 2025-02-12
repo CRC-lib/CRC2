@@ -1,7 +1,0 @@
-import ^^.core.transfers;
-import ^^.core.tokens;
-
-namespace ft4 {
-    import lib.ft4.auth;
-    import lib.ft4.accounts;
-}

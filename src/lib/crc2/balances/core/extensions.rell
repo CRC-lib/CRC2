@@ -1,0 +1,11 @@
+@extendable
+function before_mint(ft4.accounts.account, token, amount: big_integer);
+
+@extendable
+function after_mint(ft4.accounts.account, token, amount: big_integer);
+
+@extendable
+function before_burn(ft4.accounts.account, token, amount: big_integer);
+
+@extendable
+function after_burn(ft4.accounts.account, token, amount: big_integer);

@@ -1,9 +1,0 @@
-module;
-
-import ^.tokens;
-import ^.balances;
-import ^.transfers;
-
-namespace ft4 {
-    import lib.ft4.accounts;
-}
