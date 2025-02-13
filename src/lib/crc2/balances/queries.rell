@@ -6,7 +6,7 @@ query get_account_balance(account_id: byte_array, token_id: byte_array) {
 
 query get_account_balances(account_id: byte_array, page_size: integer?, page_cursor: text?) {
     return ft4.utils.make_page(
-            _get_account_balances(account_id, page_size, page_cursor),
+            _get_account_balances_paginated(account_id, page_size, page_cursor),
             page_size
         );
 }
@@ -14,7 +14,7 @@ query get_account_balances(account_id: byte_array, page_size: integer?, page_cur
 query get_token_balances(token_id: byte_array, page_size: integer?, page_cursor: text?) {
     val token = get_token(token_id);
     return ft4.utils.make_page(
-            _get_token_balances(token, page_size, page_cursor),
+            _get_token_balances_paginated(token, page_size, page_cursor),
             page_size
         );
 }

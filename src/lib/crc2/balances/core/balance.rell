@@ -93,7 +93,11 @@ function _get_account_balance(ft4.accounts.account, token): big_integer {
     return balance @? { token, account } ( .amount ) ?: 0L;
 }
 
-function _get_account_balances(
+function _get_account_balances(ft4.accounts.account) {
+    return balance @* { account } ( token = .token, amount = .amount );
+}
+
+function _get_account_balances_paginated(
     account_id: byte_array,
     page_size: integer?,
     page_cursor: text?
@@ -113,7 +117,11 @@ function _get_account_balances(
     ) limit ft4.utils.fetch_data_size(page_size);
 }
 
-function _get_token_balances(
+function _get_token_balances(token) {
+    return balance @* { token } ( account = .account, amount = .amount );
+}
+
+function _get_token_balances_paginated(
     token: token,
     page_size: integer?,
     page_cursor: text?

@@ -17,7 +17,7 @@ function (proto: text, token_id: text, cursor: text?): ft4.utils.paged_result? {
     if (proto != cutp_ext.CRC) return null;
 
     val token = get_token(cutp_ext.parse_token_id(token_id));
-    return ft4.utils.make_page(_get_token_balances(token, null, cursor), null);
+    return ft4.utils.make_page(_get_token_balances_paginated(token, null, cursor), null);
 }
 
 @extend(cutp.cutp_impl_list_address_tokens)
@@ -30,7 +30,7 @@ function (
     if (proto != cutp_ext.CRC) return null;
 
     val account = ft4.accounts.Account(cutp_ext.parse_account(address));
-    return ft4.utils.make_page(_get_account_balances(account.id, null, cursor), null);
+    return ft4.utils.make_page(_get_account_balances_paginated(account.id, null, cursor), null);
 }
 
 @extend(cutp.cutp_impl_nft_owner_data)
