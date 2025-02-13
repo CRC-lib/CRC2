@@ -1,0 +1,29 @@
+function create_plot(planet: planets.planet, name: text, coordinates: text, image_url: text) {
+    val token = crc2.balances.create_nft((planet.name + coordinates).hash());
+    create plot ( token, name, planet, coordinates, image_url );
+
+    val collection = crc2.collections.get_collection_by_name(planet.name);
+    crc2.collections.add_token_to_collection(collection, token);
+}
+
+function create_and_mint_plot(planet: planets.planet, name: text, coordinates: text, image_url: text, account: ft4.accounts.account) {
+    val token = crc2.balances.create_and_mint_nft((planet.name + coordinates).hash(), account);
+    create plot ( token, name, planet, coordinates, image_url );
+}
+
+function transfer_plot(from: ft4.accounts.account, to: ft4.accounts.account, plot: plot) {
+    crc2.transfers._transfer(from, to, plot.token, 1L);
+}
+function add_plot_metadata(crc2.tokens.token) {
+    val metadata = map<text, gtv>();
+    val plot = plot @? { token } ( $.to_struct() );
+    if (empty(plot)) return metadata;
+
+    metadata.put("name", plot.name.to_gtv());
+    metadata.put("image_url", plot.image_url.to_gtv());
+    metadata.put("planet", plot.planet.name.to_gtv());
+    metadata.put("coordinates", plot.coordinates.to_gtv());
+    metadata.put("digs", plot.digs.to_gtv());
+
+    return metadata;
+}

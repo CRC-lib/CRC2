@@ -1,0 +1,31 @@
+function create_sword(name: text, symbol: text, image_url: text, type: text, damage: integer, speed: integer) {
+    val token = crc2.balances.create_fungible(symbol.to_bytes());
+    create sword ( token, name, symbol, image_url, type, damage, speed );
+}
+
+function equip_sword(ft4.accounts.account, sword) {
+    crc2.balances.mint(sword.token, account, 1L);
+}
+
+function destroy_sword(ft4.accounts.account, sword) {
+    crc2.balances.burn(sword.token, account, 1L);
+}
+
+function transfer_sword(from: ft4.accounts.account, to: ft4.accounts.account, sword, amount: big_integer) {
+    crc2.transfers._transfer(from, to, sword.token, amount);
+}
+
+function add_sword_metadata(crc2.tokens.token) {
+    val metadata = map<text, gtv>();
+    val sword = sword @? { token } ( $.to_struct() );
+    if (empty(sword)) return metadata;
+
+    metadata.put("name", sword.name.to_gtv());
+    metadata.put("symbol", sword.symbol.to_gtv());
+    metadata.put("image_url", sword.image_url.to_gtv());
+    metadata.put("type", sword.type.to_gtv());
+    metadata.put("damage", sword.damage.to_gtv());
+    metadata.put("speed", sword.speed.to_gtv());
+
+    return metadata;
+}
