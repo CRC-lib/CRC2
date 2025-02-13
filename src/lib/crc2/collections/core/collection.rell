@@ -26,6 +26,15 @@ function add_token_to_collection(collection: collection, token) {
     return create collection_token ( collection, token );
 }
 
+function get_tokens_by_collection(collection) {
+    return collection_token @* { collection } ( .token );
+}
+
 function get_tokens_by_collection_name(collection_name: text) {
-    return collection_token @* { .collection.name == collection_name } ( .token );
+    return collection_token @* { get_collection_by_name(collection_name) } ( .token );
+}
+
+function get_account_balances_by_collection(collection, account: ft4.accounts.account) {
+    val tokens = get_tokens_by_collection(collection);
+   return balance @* { account, .token in tokens } ( token = .token, amount = .amount );
 }
