@@ -11,7 +11,8 @@ function (
 ): map<text, gtv>? {
     if (proto != cutp_ext.CRC) return null;
     val token = get_token(cutp_ext.parse_token_id(token_id));
-    val metadata = _get_metadata(token);
+    val token_types = token_type @* { token } (.type);
+    val metadata = _get_metadata(token, token_types);
     if (empty(requested_data)) return metadata;
 
     val filtered_data = map<text, gtv>();

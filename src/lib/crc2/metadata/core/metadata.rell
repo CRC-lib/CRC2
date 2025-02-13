@@ -1,4 +1,4 @@
 
-function _get_metadata(token) {
-  return add_metadata(token, map<text, gtv>());
+function _get_metadata(token, types: list<name>) {
+  return add_metadata(token, map<text, gtv>(), types);
 }
