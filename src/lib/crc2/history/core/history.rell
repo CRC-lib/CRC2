@@ -1,51 +1,46 @@
-enum transfer_type {
-    sent,
-    received
-}
+
+val ZERO_ID = byte_array.from_hex("00".repeat(32));
 
 @log
-entity transfer_history_entry {
+entity transfer_data {
     op_index: integer = op_context.op_index;
     index transaction, op_index;
-    index ft4.accounts.account;
+    index from_id: byte_array;
+    index to_id: byte_array;
     index token;
     amount: big_integer;
-    transfer_type;
 }
 
 @extend(after_transfer)
 function (from: ft4.accounts.account, to: ft4.accounts.account, token: token, amount: big_integer) {
-    create transfer_history_entry (
-        account = from,
+    create transfer_data (
+        from_id = from.id,
+        to_id = to.id,
         token = token,
         amount = amount,
-        transfer_type.sent
-    );
-
-    create transfer_history_entry (
-        account = to,
-        token = token,
-        amount = amount,
-        transfer_type.received
     );
 }
 
 @extend(after_mint)
 function (account: ft4.accounts.account, token: token, amount: big_integer) {
-    create transfer_history_entry (
-        account = account,
+    create transfer_data (
+        from_id = ZERO_ID,
+        to_id = account.id,
         token = token,
-        amount = amount,
-        transfer_type.received
+        amount = amount
     );
 }
 
 @extend(after_burn)
 function (account: ft4.accounts.account, token: token, amount: big_integer) {
-    create transfer_history_entry (
-        account = account,
+    create transfer_data (
+        from_id = account.id,
+        to_id = ZERO_ID,
         token = token,
-        amount = amount,
-        transfer_type.sent
+        amount = amount
     );
+}
+
+function get_transfer_history(account_id: byte_array) {
+    return transfer_data @* { .from_id == account_id  or .to_id == account_id };
 }
