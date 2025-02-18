@@ -1,4 +1,5 @@
-query get_metadata(token_id: byte_array, types: list<name>) {
+query get_metadata(token_id: byte_array) {
     val token = get_token(token_id);
-    return _get_metadata(token, types);
+    val token_types = get_token_types(token);
+    return _get_metadata(token, token_types);
 }

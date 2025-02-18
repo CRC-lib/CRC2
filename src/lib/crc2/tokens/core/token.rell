@@ -5,8 +5,8 @@ entity token {
     mutable protocol_id: integer;
 }
 entity token_type {
-    key token, type;
-    type: name;
+    key token, name;
+    name;
 }
 
 function add_token_type(token, type: name){
@@ -17,8 +17,8 @@ function add_token_type(token, type: name){
 function is_type(token, type: name){
     return token_type @? { token, type } != null;
 }
-function get_token_types(token){
-    return token_type @* { token };
+function get_token_types(token) : list<name> {
+    return token_type @* { token } (.name);
 }
 function create_token(id: byte_array, protocol_id: integer = CRC2_PROTOCOL_ID) {
     return create token ( origin_brid = chain_context.blockchain_rid, id, protocol_id );
