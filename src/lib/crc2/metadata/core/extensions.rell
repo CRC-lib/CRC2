@@ -1,2 +1,2 @@
 @extendable
-function add_metadata(token, metadata: map<text, gtv>): map<text, gtv>;
+function add_metadata(token, metadata: map<text, gtv>, types: list<name>): map<text, gtv>;

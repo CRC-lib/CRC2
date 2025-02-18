@@ -1,0 +1,4 @@
+entity planet {
+    key name: text;
+    image_url: text;
+}

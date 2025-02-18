@@ -1,0 +1,9 @@
+entity plot {
+    key crc2.tokens.token;
+    name: text;
+    image_url: text;
+    planets.planet;
+    coordinates: text;
+    mutable digs: integer = 0;
+    key planet, coordinates;
+}

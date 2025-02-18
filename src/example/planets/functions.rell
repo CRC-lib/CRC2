@@ -1,0 +1,6 @@
+function create_planet(name: text, image_url: text) {
+    val planet = create planet ( name, image_url );
+
+    //We can optionally use the crc2 collections to group tokens 
+    crc2.collections.create_collection(planet.name);
+}

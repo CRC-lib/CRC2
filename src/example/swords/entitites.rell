@@ -1,0 +1,9 @@
+entity sword {
+    key crc2.tokens.token;
+    name: text;
+    key symbol: text;
+    image_url: text;
+    type: text;
+    damage: integer;
+    speed: integer;
+}

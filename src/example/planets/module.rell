@@ -1,0 +1,6 @@
+@mount("planets") module;
+
+namespace crc2 {
+    import lib.crc2.tokens;
+    import lib.crc2.collections;
+}

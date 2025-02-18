@@ -1,0 +1,16 @@
+@mount("swords") module;
+namespace crc2 {
+    import lib.crc2.tokens;
+    import lib.crc2.balances;
+    import lib.crc2.collections;
+    import lib.crc2.metadata;
+    import lib.crc2.transfers;
+    import lib.crc2.history;
+}
+
+namespace ft4 {
+    import lib.ft4.accounts;
+    import lib.ft4.auth;
+}
+
+val SWORD_TYPE = "sword";
