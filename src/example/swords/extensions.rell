@@ -1,0 +1,8 @@
+
+@extend(crc2.metadata.add_metadata)
+function add_metadata(crc2.tokens.token, metadata: map<text, gtv>, types: list<name>) {
+    if(types.contains(SWORD_TYPE)){
+      metadata.put_all(add_sword_metadata(token));
+    }
+    return metadata;
+}

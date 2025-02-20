@@ -1,0 +1,15 @@
+entity token_type {
+    key token, name;
+}
+
+function add_token_type(token, type: name){
+    if (token_type @? { token, type } == null) {
+    create token_type ( token, type );
+  }
+}
+function is_type(token, type: name){
+    return token_type @? { token, type } != null;
+}
+function get_token_types(token) : list<name> {
+    return token_type @* { token } (.name);
+}
