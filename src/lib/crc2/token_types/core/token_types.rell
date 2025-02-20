@@ -1,6 +1,5 @@
 entity token_type {
     key token, name;
-    name;
 }
 
 function add_token_type(token, type: name){
