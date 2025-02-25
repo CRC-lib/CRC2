@@ -38,3 +38,6 @@ function get_account_balances_by_collection(collection, account: ft4.accounts.ac
     val tokens = get_tokens_by_collection(collection);
    return balance @* { account, .token in tokens } ( token = .token, amount = .amount );
 }
+function is_token_in_collection(token, collection) : boolean {
+    return collection_token @? { token, collection } != null;
+}
