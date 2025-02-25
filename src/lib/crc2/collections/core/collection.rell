@@ -30,8 +30,8 @@ function get_tokens_by_collection(collection) {
     return collection_token @* { collection } ( .token );
 }
 
-function get_tokens_by_collection_name(collection_name: text) {
-    return collection_token @* { get_collection_by_name(collection_name) } ( .token );
+query get_tokens_by_collection_name(collection_name: text, take: integer = 500, skip : integer = 500) {
+    return collection_token @* { get_collection_by_name(collection_name) } ( .token ) limit 500 offset skip;
 }
 
 function get_account_balances_by_collection(collection, account: ft4.accounts.account) {
