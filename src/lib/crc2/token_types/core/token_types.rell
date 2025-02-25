@@ -13,3 +13,6 @@ function is_type(token, type: name){
 function get_token_types(token) : list<name> {
     return token_type @* { token } (.name);
 }
+function get_tokens_with_types(types: list<name>){
+    return token_type @* {.name in types} (.token);
+}
