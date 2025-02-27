@@ -29,11 +29,17 @@ function add_token_to_collection(collection: collection, token) {
 function get_tokens_by_collection(collection) {
     return collection_token @* { collection } ( .token );
 }
-
-function get_tokens_by_collection_name(collection_name: text, take: integer = 500, skip : integer = 500) {
-    return collection_token @* { get_collection_by_name(collection_name) } ( .token ) limit 500 offset skip;
+function _get_tokens_by_collection_name_paginated(collection_name: text, page_size: integer?, page_cursor: text?): list<ft4.utils.pagination_result> {
+    val before_rowid = ft4.utils.before_rowid(page_cursor);
+    return collection_token @* { get_collection_by_name(collection_name) } (
+        ft4.utils.pagination_result(
+            data = (
+                token = .token,
+            ).to_gtv_pretty(),
+            rowid = .rowid
+        )
+    ) limit ft4.utils.fetch_data_size(page_size);
 }
-
 function get_account_balances_by_collection(collection, account: ft4.accounts.account) {
     val tokens = get_tokens_by_collection(collection);
    return balance @* { account, .token in tokens } ( token = .token, amount = .amount );

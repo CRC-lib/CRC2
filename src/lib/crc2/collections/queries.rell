@@ -1,0 +1,6 @@
+query get_tokens_by_collection_name(collection_name: text, page_size: integer?, page_cursor: text?) {
+    return ft4.utils.make_page(
+            _get_tokens_by_collection_name_paginated(collection_name, page_size, page_cursor),
+            page_size
+    );
+}
