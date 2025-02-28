@@ -10,5 +10,8 @@ function create_token(id: byte_array, protocol_id: integer = CRC2_PROTOCOL_ID) {
 }
 
 function get_token(id: byte_array, origin_brid: byte_array = chain_context.blockchain_rid) {
-    return require(token @? { origin_brid, id }, "Token with id %s not found".format(id));
+    return require(get_token_if_exists(id, origin_brid), "Token with id %s not found".format(id));
+}
+function get_token_if_exists(id: byte_array, origin_brid: byte_array = chain_context.blockchain_rid) : token? {
+    return token @? { origin_brid, id };
 }
