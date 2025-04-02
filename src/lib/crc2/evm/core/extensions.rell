@@ -1,0 +1,5 @@
+@extendable
+function before_create_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer);
+
+@extendable
+function after_create_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer);

@@ -1,0 +1,33 @@
+val EVM_PROTOCOL_ID = 1;
+
+entity evm_token {
+    network_id: integer;
+    contract_address: byte_array;
+    token_id: big_integer;
+    key network_id, contract_address, token_id;
+    key token;
+}
+
+function ensure_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer) {
+    val token = evm_token @? { network_id, contract_address, token_id } ( .token );
+    return token ?: create_evm_token(network_id, contract_address, token_id);
+}
+
+function create_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer) {
+    before_create_evm_token(network_id, contract_address, token_id);
+
+    val token = create_token((network_id + contract_address.to_hex() + token_id).hash(), EVM_PROTOCOL_ID);
+    create evm_token(network_id, contract_address, token_id, token);
+
+    after_create_evm_token(network_id, contract_address, token_id);
+    
+    return token;
+}
+ 
+function link_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer, token: token) {
+    return create evm_token(network_id, contract_address, token_id, token);
+}
+
+function get_token_by_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer) {
+    return evm_token @? { network_id, contract_address, token_id } ( .token );
+}
