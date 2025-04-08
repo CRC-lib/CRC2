@@ -8,19 +8,19 @@ entity evm_token {
     key token;
 }
 
-function ensure_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer) {
+function ensure_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer, is_nft: boolean? = null) {
     val token = evm_token @? { network_id, contract_address, token_id } ( .token );
-    return token ?: create_evm_token(network_id, contract_address, token_id);
+    return token ?: create_evm_token(network_id, contract_address, token_id, is_nft);
 }
 
-function create_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer) {
+function create_evm_token(network_id: integer, contract_address: byte_array, token_id: big_integer, is_nft: boolean? = null) {
     before_create_evm_token(network_id, contract_address, token_id);
 
-    val token = create_token((network_id + contract_address.to_hex() + token_id).hash(), EVM_PROTOCOL_ID);
+    val token = create_token_with_protocol_id((network_id + contract_address.to_hex() + token_id).hash(), EVM_PROTOCOL_ID, is_nft);
     create evm_token(network_id, contract_address, token_id, token);
 
     after_create_evm_token(network_id, contract_address, token_id);
-    
+
     return token;
 }
  

@@ -23,6 +23,26 @@ function create_nft(id: byte_array) {
     return token;
 }
 
+function create_fungible_with_protocol_id(id: byte_array, protocol_id: integer, max_supply: big_integer = MAX_TOKEN_AMOUNT) {
+    val token = create_token(id, protocol_id);
+    create token_supply ( token, max = max_supply );
+    return token;
+}
+
+function create_nft_with_protocol_id(id: byte_array, protocol_id: integer) {
+    val token = create_token(id, protocol_id);
+    create token_supply ( token, max = 1L );
+    return token;
+}
+
+function create_token_with_protocol_id(id: byte_array, protocol_id: integer, is_nft: boolean? = null) {
+    when (is_nft) {
+        true -> return create_nft_with_protocol_id(id, protocol_id);
+        false -> return create_fungible_with_protocol_id(id, protocol_id);
+        else -> return create_token(id, protocol_id);
+    }
+}
+
 function create_and_mint_fungible(
     id: byte_array,
     max_supply: big_integer,

@@ -1,6 +1,7 @@
 module;
 
 import ^^.tokens.core.*;
+import ^^.balances.core.*;
 
 namespace ft4 {
     import lib.ft4.accounts;
