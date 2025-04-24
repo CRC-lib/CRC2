@@ -98,7 +98,7 @@ function _increase_balance(token, account: ft4.accounts.account, amount: big_int
 }
 
 function _deduct_balance(token, account: ft4.accounts.account, amount: big_integer) {
-    require(amount > 0L, "Amount must be positive");
+    require(amount > 0L, "Amount must be greater than 0");
     val balance = balance @? { token, account };
     require(balance, "Account %s does not have a balance for token %s".format(account.id, token.id));
     require(balance.amount >= amount, "Insufficient balance");
